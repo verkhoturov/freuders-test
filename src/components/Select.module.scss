@@ -1,0 +1,63 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    width: 100%;
+
+    .uiSelect {
+        height: 40px;
+        font-size: 14px;
+        border-radius: 2px;
+        padding-right: 28px;
+
+        @media screen and (min-width: 768px) {
+            height: 52px;
+            font-size: 20px;
+            padding-right: 32px;
+        }
+    }
+
+    &.ageRange {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        @media screen and (min-width: 768px) {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @media screen and (min-width: 768px) {
+        gap: 12px;
+    }
+}
+
+.label {
+    font-size: 14px;
+    line-height: 14px;
+    font-weight: 700;
+    padding-left: 4px;
+    white-space: nowrap;
+
+    @media screen and (min-width: 768px) {
+        font-size: 18px;
+        line-height: 18px;
+        padding-left: 10px;
+
+        &.large {
+            font-size: 20px;
+            line-height: 20px;
+        }
+    }
+}
+
+.inner {
+    gap: 6px;
+
+    @media screen and (min-width: 768px) {
+        padding-left: 14px;
+        gap: 12px;
+    }
+}
