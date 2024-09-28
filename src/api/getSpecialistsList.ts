@@ -1,20 +1,28 @@
-import { FilterFormState } from "../types/filter";
+import { Sex, Level, FilterFormState, Specialist } from "../types";
 
-interface FetchSpecialistsParams {
-    sex?: number;
+export interface FetchResponse {
+    data: {
+        items: Specialist[];
+        totalCount: number;
+    }
+    Message?: string;
+}
+
+export interface FetchParams {
+    sex?: Sex;
     topicId?: number;
-    level?: number;
+    level?: Level;
     ratingFrom?: number;
     ratingTo?: number;
     ageFrom?: number;
     ageTo?: number;
 }
 
-function convertStateToFetchParams(state: FilterFormState): FetchSpecialistsParams {
-    const params: FetchSpecialistsParams = {};
+function convertStateToFetchParams(state: FilterFormState): FetchParams {
+    const params: FetchParams = {};
 
     if (state.sex) {
-        params.sex = Number(state.sex);
+        params.sex = Number(state.sex) as Sex;
     }
 
     if (state.topic) {
@@ -25,7 +33,7 @@ function convertStateToFetchParams(state: FilterFormState): FetchSpecialistsPara
     }
 
     if (state.level) {
-        params.level = Number(state.level);
+        params.level = Number(state.level) as Level;
     }
 
     if (state.rating) {
@@ -60,7 +68,7 @@ function convertStateToFetchParams(state: FilterFormState): FetchSpecialistsPara
     return params;
 }
 
-const fetchSpecialists = async (params: FetchSpecialistsParams) => {
+const fetchSpecialists = async (params: FetchParams) => {
     const defaultParams = {
         limit: 12,
         offset: 0
@@ -69,13 +77,25 @@ const fetchSpecialists = async (params: FetchSpecialistsParams) => {
     const combinedParams = { ...defaultParams, ...params };
 
     const searchParams = new URLSearchParams(
-      Object.entries(combinedParams)
-        .filter(([_, value]) => value !== undefined)
-        .map(([key, value]) => [key, value.toString()])
+        Object.entries(combinedParams)
+            .filter(([_, value]) => value !== undefined)
+            .map(([key, value]) => [key, value.toString()])
     );
 
-    const response = await fetch(`/api/search/specialists?${searchParams.toString()}`);
-    return response.json();
+    try {
+        const response = await fetch(`/api/search/specialists?${searchParams.toString()}`);
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.Message);
+        }
+
+        const { data: { items, totalCount } }: FetchResponse = await response.json();
+
+        return { items, totalCount };
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 export const getSpecialistsList = async (formState: FilterFormState) => {

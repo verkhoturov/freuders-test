@@ -2,6 +2,8 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { App } from './components/App.tsx';
+import { store } from './store';
+import { Provider } from 'react-redux'
 
 const customTheme = extendTheme({
   colors: {
@@ -22,7 +24,9 @@ const customTheme = extendTheme({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ChakraProvider theme={customTheme} resetCSS>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </ChakraProvider>
   </StrictMode>,
 )

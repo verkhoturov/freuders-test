@@ -2,8 +2,11 @@ import React from 'react';
 import { Flex, useMediaQuery } from '@chakra-ui/react';
 import { Select, SelectAgeRange, SelectOption } from "./Select";
 import { Button } from './Button';
-import { getSpecialistsList } from "../api/apiService";
-import { Sex, Level, FilterFormState } from "../types/filter";
+import { getSpecialistsList } from "../api/getSpecialistsList";
+import { Sex, Level } from "../types";
+
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch, setFormState, setSpecialistsList } from '../store';
 
 import styles from './FilterForm.module.scss';
 
@@ -65,35 +68,33 @@ const SelectorWrapper = ({ children, alignItems }: { children: React.ReactNode; 
 
 export const FilterForm = () => {
   const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
+  const [loading, setLoading] = React.useState(false);
 
-  const [filterFormState, setFilterFormState] = React.useState<FilterFormState>({
-    sex: "",
-    topic: "",
-    level: "",
-    rating: "",
-    ageFrom: "18",
-    ageTo: "99",
-  });
-
-  console.log(filterFormState);
+  const dispatch: AppDispatch = useDispatch();
+  const filterFormState = useSelector((state: RootState) => state.filterForm);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFilterFormState((prevState) => ({
-      ...prevState,
+    dispatch(setFormState({
+      ...filterFormState,
       [name]: value,
     }));
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    setLoading(true);
 
+    const result = await getSpecialistsList(filterFormState);
 
+    if (result?.items) {
+      dispatch(setSpecialistsList(result.items));
+    }
 
-    await getSpecialistsList(filterFormState);
-
+    setLoading(false);
   }
 
   return (
@@ -150,7 +151,7 @@ export const FilterForm = () => {
 
 
         <SelectorWrapper alignItems="flex-end" >
-          <Button colorScheme='pink' type='submit'>Показать анкеты</Button>
+          <Button colorScheme='pink' type='submit' isLoading={loading}>Показать анкеты</Button>
         </SelectorWrapper>
 
       </Flex>
