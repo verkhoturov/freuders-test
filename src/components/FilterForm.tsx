@@ -2,11 +2,8 @@ import React from 'react';
 import { Flex, useMediaQuery } from '@chakra-ui/react';
 import { Select, SelectAgeRange, SelectOption } from "./Select";
 import { Button } from './Button';
-import { getSpecialistsList } from "../api/getSpecialistsList";
 import { Sex, Level } from "../types";
-
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch, setFormState, setSpecialistsList } from '../store';
+import { RootState, useAppDispatch, setFormState, fetchSpecialists, useAppSelector } from '../store';
 
 import styles from './FilterForm.module.scss';
 
@@ -68,10 +65,10 @@ const SelectorWrapper = ({ children, alignItems }: { children: React.ReactNode; 
 
 export const FilterForm = () => {
   const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
-  const [loading, setLoading] = React.useState(false);
 
-  const dispatch: AppDispatch = useDispatch();
-  const filterFormState = useSelector((state: RootState) => state.filterForm);
+  const dispatch = useAppDispatch();
+  const filterFormState = useAppSelector((state: RootState) => state.filterForm);
+  const { loading } = useAppSelector((state: RootState) => state.specialists);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -85,16 +82,7 @@ export const FilterForm = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    setLoading(true);
-
-    const result = await getSpecialistsList(filterFormState);
-
-    if (result?.items) {
-      dispatch(setSpecialistsList(result.items));
-    }
-
-    setLoading(false);
+    dispatch(fetchSpecialists(filterFormState));
   }
 
   return (

@@ -1,10 +1,10 @@
 import React from "react";
 import { Page } from "./Page";
 import { useAppDispatch, useAppSelector, fetchSpecialists, RootState } from '../store';
- 
+
 import { FilterForm } from "./FilterForm";
 import { CardList } from "./CardList";
-import { Spinner, Divider, Center, Flex } from '@chakra-ui/react'; 
+import { Spinner, Divider, Center, Flex } from '@chakra-ui/react';
 
 import "../styles/global.scss";
 
@@ -17,21 +17,15 @@ export const App = () => {
     dispatch(fetchSpecialists(filterFormState));
   }, []);
 
-  if (loading) {
-    return (
-      <Flex justifyContent="center" alignItems="center" height="100vh">
-        <Spinner size="xl" />
-      </Flex>
-    );
-  }
-
   return (
     <Page>
       <FilterForm />
       <Center height='50px'>
         <Divider />
       </Center>
-      <CardList />
+      {loading ? <Flex justifyContent="center" alignItems="center" flex="1 1 auto">
+        <Spinner size="xl" />
+      </Flex> : <CardList />}
     </Page>
   )
 }
