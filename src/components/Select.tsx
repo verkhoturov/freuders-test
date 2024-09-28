@@ -5,40 +5,34 @@ import styles from './Select.module.scss';
 
 export type SelectOption = {
   label: string;
-  value?: string;
+  value?: number;
 }
 
 interface SelectProps {
   name?: string;
   id?: string;
+  value?: string;
   placeholder?: string;
   options: SelectOption[];
   label?: string;
   isLargeLabel?: boolean;
-  onSelectionChange?: (value: string) => void;
+  onSelectionChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export const Select = ({ label, options, isLargeLabel, onSelectionChange, ...rest }: SelectProps) => {
-
-  const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (onSelectionChange) {
-      onSelectionChange(e.target.value);
-    }
-  }
-
   return (
     <div className={styles.wrapper}>
       {label && <label className={clsx(styles.label, { [styles.large]: isLargeLabel })} htmlFor={rest.id}>{label}</label>}
 
-      <UISelect className={styles.uiSelect} size="lg" onChange={onChange}  {...rest}>
+      <UISelect className={styles.uiSelect} size="lg" onChange={onSelectionChange}  {...rest}>
         {options.map(({ value, label }, i) => <option key={i} value={value}>{label}</option>)}
       </UISelect>
     </div>
   )
 }
 
-export const SelectAgeRange = ({ label, ageFrom, ageTo, onSelectionFrom, onSelectionTo }: {
-  label?: string; ageFrom: string; ageTo: string; onSelectionFrom: (value: string) => void; onSelectionTo: (value: string) => void
+export const SelectAgeRange = ({ label, ageFrom, ageTo, onSelectionChange }: {
+  label?: string; ageFrom: string; ageTo: string; onSelectionChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) => {
   const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
 
@@ -49,19 +43,9 @@ export const SelectAgeRange = ({ label, ageFrom, ageTo, onSelectionFrom, onSelec
 
   React.useEffect(() => {
     if (Number(ageFrom) > Number(ageTo)) {
-      onSelectionFrom(ageTo);
-      onSelectionTo(ageFrom);
+      onSelectionChange({ target: { name: 'ageTo', value: ageFrom } } as React.ChangeEvent<HTMLSelectElement>);
     }
-  }, [ageFrom, ageTo]);
-
-
-  const onChangeFrom = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onSelectionFrom(e.target.value);
-  }
-
-  const onChangeTo = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onSelectionTo(e.target.value);
-  }
+  }, [ageFrom, ageTo, onSelectionChange]);
 
   return (
     <div className={clsx(styles.wrapper, styles.ageRange)}>
@@ -70,14 +54,14 @@ export const SelectAgeRange = ({ label, ageFrom, ageTo, onSelectionFrom, onSelec
       <Flex className={styles.inner} alignItems="center" justifyContent="space-between">
         <Flex alignItems="center" gap={isLargerThan768 ? 3 : 1} flexBasis={124}>
           <span>От</span>
-          <UISelect className={styles.uiSelect} value={ageFrom} onChange={onChangeFrom} size="lg" id="age-range" name="age-range-from">
+          <UISelect className={styles.uiSelect} value={ageFrom} onChange={onSelectionChange} size="lg" id="age-range" name="ageFrom">
             {options.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
           </UISelect>
         </Flex>
 
         <Flex alignItems="center" gap={isLargerThan768 ? 3 : 1} flexBasis={124}>
           <span>До</span>
-          <UISelect className={styles.uiSelect} value={ageTo} onChange={onChangeTo} size="lg" id="age-range" name="age-range-from">
+          <UISelect className={styles.uiSelect} value={ageTo} onChange={onSelectionChange} size="lg" id="age-range" name="ageTo">
             {options.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
           </UISelect>
         </Flex>

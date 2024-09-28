@@ -2,16 +2,18 @@ import React from 'react';
 import { Flex, useMediaQuery } from '@chakra-ui/react';
 import { Select, SelectAgeRange, SelectOption } from "./Select";
 import { Button } from './Button';
+import { getSpecialistsList } from "../api/apiService";
+import { Sex, Level, FilterFormState } from "../types/filter";
 
 import styles from './FilterForm.module.scss';
 
 const sexOptions: SelectOption[] = [{
   label: 'Любого пола'
 }, {
-  value: "1",
+  value: Sex.Male,
   label: 'М'
 }, {
-  value: "2",
+  value: Sex.Female,
   label: 'Ж'
 }];
 
@@ -19,11 +21,11 @@ const levelOptions = [{
   label: "Все варианты",
 },
 {
-  value: "0",
+  value: Level.Basic,
   label: "Базовый",
 },
 {
-  value: "1",
+  value: Level.Premium,
   label: "Премиум",
 }];
 
@@ -31,19 +33,19 @@ const ratingOptions = [{
   label: "Не важен",
 },
 {
-  value: "0",
+  value: 0,
   label: "Новые",
 },
 {
-  value: "100",
+  value: 100,
   label: "От 100 до 80",
 },
 {
-  value: "79",
+  value: 79,
   label: "От 79 до 60",
 },
 {
-  value: "59",
+  value: 59,
   label: "От 59 до 40",
 },
 ];
@@ -63,15 +65,34 @@ const SelectorWrapper = ({ children, alignItems }: { children: React.ReactNode; 
 
 export const FilterForm = () => {
   const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
-  const [sex, setSex] = React.useState("");
-  const [topic, setTopic] = React.useState("");
-  const [level, setLevel] = React.useState("");
-  const [rating, setRating] = React.useState("");
-  const [ageFrom, setAgeFrom] = React.useState("18");
-  const [ageTo, setAgeTo] = React.useState("99");
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [filterFormState, setFilterFormState] = React.useState<FilterFormState>({
+    sex: "",
+    topic: "",
+    level: "",
+    rating: "",
+    ageFrom: "18",
+    ageTo: "99",
+  });
+
+  console.log(filterFormState);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFilterFormState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+
+
+    await getSpecialistsList(filterFormState);
 
   }
 
@@ -81,7 +102,9 @@ export const FilterForm = () => {
         <SelectorWrapper>
           <Select label="Я ищу психолога"
             id="sex"
-            onSelectionChange={setSex}
+            name="sex"
+            value={filterFormState.sex}
+            onSelectionChange={handleChange}
             options={sexOptions}
             isLargeLabel
           />
@@ -89,17 +112,18 @@ export const FilterForm = () => {
 
         <SelectorWrapper>
           <SelectAgeRange label="В возрасте"
-            ageFrom={ageFrom}
-            ageTo={ageTo}
-            onSelectionFrom={setAgeFrom}
-            onSelectionTo={setAgeTo}
+            ageFrom={filterFormState.ageFrom}
+            ageTo={filterFormState.ageTo}
+            onSelectionChange={handleChange}
           />
         </SelectorWrapper>
 
         <SelectorWrapper >
           <Select label="Тема"
             id="topic"
-            onSelectionChange={setTopic}
+            name="topic"
+            value={filterFormState.topic}
+            onSelectionChange={handleChange}
             options={topicOptions}
           />
         </SelectorWrapper>
@@ -107,7 +131,9 @@ export const FilterForm = () => {
         <SelectorWrapper >
           <Select label="Квалификация"
             id="level"
-            onSelectionChange={setLevel}
+            name="level"
+            value={filterFormState.level}
+            onSelectionChange={handleChange}
             options={levelOptions}
           />
         </SelectorWrapper>
@@ -115,7 +141,9 @@ export const FilterForm = () => {
         <SelectorWrapper  >
           <Select label="Рейтинг"
             id="rating"
-            onSelectionChange={setRating}
+            name="rating"
+            value={filterFormState.rating}
+            onSelectionChange={handleChange}
             options={ratingOptions}
           />
         </SelectorWrapper>
