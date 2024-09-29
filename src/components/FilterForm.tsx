@@ -7,6 +7,7 @@ import {
     RootState,
     useAppDispatch,
     setFormState,
+    setSubjectsState,
     fetchSpecialists,
     useAppSelector,
 } from '../store';
@@ -84,14 +85,19 @@ export const FilterForm = () => {
     const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
 
     const [loading, setLoading] = React.useState(false);
-    const [topicOptions, setTopicOptions] = React.useState<SelectOption[]>([
-        {
-            label: 'Любая тема',
-        },
-    ]);
 
     const dispatch = useAppDispatch();
     const filterFormState = useAppSelector((state: RootState) => state.filterForm);
+    const subjectsState = useAppSelector((state: RootState) => state.subjects);
+
+    const subjectOptions = React.useMemo(() => {
+        const subjectsOptions: SelectOption[] = subjectsState.list.map((item) => ({
+            value: item.id,
+            label: item.name,
+        }));
+
+        return subjectsOptions;
+    }, [subjectsState]);
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -110,17 +116,21 @@ export const FilterForm = () => {
         setLoading(false);
     };
 
-    const getTopicOptions = async () => {
-        const res = await getSubjectsList();
+    const getSubjects = async () => {
+        if (subjectOptions.length === 1) {
+            const res = await getSubjectsList();
 
-        if (res?.list) {
-            const topicOptions: SelectOption[] = res?.list.map((item) => ({
-                value: item.id,
-                label: item.name,
-            }));
-            setTopicOptions(topicOptions);
+            if (res?.list) {
+                dispatch(
+                    setSubjectsState({
+                        list: res.list,
+                    }),
+                );
+            }
         }
     };
+
+    console.log('subjectOptions', subjectOptions);
 
     return (
         <form className={styles.form} onSubmit={onSubmit}>
@@ -154,12 +164,12 @@ export const FilterForm = () => {
                 <SelectorWrapper>
                     <Select
                         label="Тема"
-                        id="topic"
-                        name="topic"
-                        value={filterFormState.topic}
+                        id="subject"
+                        name="subjectId"
+                        value={filterFormState.subjectId}
                         onSelectionChange={handleChange}
-                        options={topicOptions}
-                        onClick={getTopicOptions}
+                        options={subjectOptions}
+                        onClick={getSubjects}
                     />
                 </SelectorWrapper>
 

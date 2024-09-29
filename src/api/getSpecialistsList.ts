@@ -10,7 +10,7 @@ export interface FetchResponse {
 
 export interface FetchParams {
     sex?: Sex;
-    topicId?: number;
+    subjectId?: number;
     level?: Level;
     ratingFrom?: number;
     ratingTo?: number;
@@ -25,10 +25,10 @@ function convertStateToFetchParams(state: FilterFormState): FetchParams {
         params.sex = Number(state.sex) as Sex;
     }
 
-    if (state.topic) {
-        const topicId = Number(state.topic);
-        if (!isNaN(topicId)) {
-            params.topicId = topicId;
+    if (state.subjectId) {
+        const subjectId = Number(state.subjectId);
+        if (!isNaN(subjectId)) {
+            params.subjectId = subjectId;
         }
     }
 

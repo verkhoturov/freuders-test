@@ -54,7 +54,7 @@ export const CardList = () => {
                 ))}
             </div>
 
-            {list.length > 0 && (
+            {list.length > 11 && (
                 <div className={styles.loadButton}>
                     {hideLoadMoreButton ? (
                         <p>К сожалению, больше нет анкет с такими параметрами</p>

@@ -3,7 +3,7 @@ import { FilterFormState } from '../types';
 
 const initialState: FilterFormState = {
     sex: '',
-    topic: '',
+    subjectId: '',
     level: '',
     rating: '',
     ageFrom: '18',
@@ -16,7 +16,7 @@ export const filterFormSlice = createSlice({
     reducers: {
         setFormState: (state, action: PayloadAction<FilterFormState>) => {
             state.sex = action.payload.sex;
-            state.topic = action.payload.topic;
+            state.subjectId = action.payload.subjectId;
             state.level = action.payload.level;
             state.rating = action.payload.rating;
             state.ageFrom = action.payload.ageFrom;

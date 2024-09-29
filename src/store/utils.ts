@@ -1,23 +1,39 @@
-import { FilterFormState } from '../types';
+import { FilterFormState, SubjectsState } from '../types';
 
-export const loadFilterFormState = () => {
+const loadFromLocalStorage = (key: string) => {
     try {
-        const serializedState = localStorage.getItem('filterFormState');
+        const serializedState = localStorage.getItem(key);
         if (serializedState === null) {
-            return undefined; // Используйте дефолтное состояние, если ничего не сохранено
+            return undefined;
         }
         return JSON.parse(serializedState);
     } catch (err) {
-        console.error('Не удалось загрузить состояние filterForm из localStorage:', err);
+        console.error(`Не удалось загрузить состояние ${key} из localStorage:`, err);
         return undefined;
     }
 };
 
-export const saveFilterFormState = (state: FilterFormState) => {
+const saveToLocalStorage = <T>(key: string, state: T) => {
     try {
         const serializedState = JSON.stringify(state);
-        localStorage.setItem('filterFormState', serializedState);
+        localStorage.setItem(key, serializedState);
     } catch (err) {
-        console.error('Не удалось сохранить состояние filterForm в localStorage:', err);
+        console.error(`Не удалось сохранить состояние ${key} в localStorage:`, err);
     }
+};
+
+export const loadFilterFormState = () => {
+    return loadFromLocalStorage('filterFormState');
+};
+
+export const saveFilterFormState = (state: FilterFormState) => {
+    return saveToLocalStorage<FilterFormState>('filterFormState', state);
+};
+
+export const loadSubjectsState = () => {
+    return loadFromLocalStorage('subjectsState');
+};
+
+export const saveSubjectsState = (state: SubjectsState) => {
+    return saveToLocalStorage<SubjectsState>('subjectsState', state);
 };
