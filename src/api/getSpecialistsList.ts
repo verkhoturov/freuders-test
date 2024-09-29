@@ -68,10 +68,10 @@ function convertStateToFetchParams(state: FilterFormState): FetchParams {
     return params;
 }
 
-const fetchSpecialists = async (params: FetchParams) => {
+const fetchSpecialists = async (params: FetchParams, offset?: number) => {
     const defaultParams = {
         limit: 12,
-        offset: 0,
+        offset: offset ? offset : 0,
     };
 
     const combinedParams = { ...defaultParams, ...params };
@@ -101,7 +101,7 @@ const fetchSpecialists = async (params: FetchParams) => {
     }
 };
 
-export const getSpecialistsList = async (formState: FilterFormState) => {
+export const getSpecialistsList = async (formState: FilterFormState, offset?: number) => {
     const params = convertStateToFetchParams(formState);
-    return fetchSpecialists(params);
+    return fetchSpecialists(params, offset);
 };

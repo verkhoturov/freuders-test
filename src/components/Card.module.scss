@@ -1,7 +1,8 @@
 .wrapper {
 
   position: relative;
-  flex: 1 1 45%;
+  flex: 1 1 45%;        
+  max-width: 50%;
   min-height: 180px;
 
   @media screen and (width >= 420px) {
@@ -9,11 +10,13 @@
   }
 
   @media screen and (width >= 520px) {
-    flex: 1 1 30%;
+    flex: 1 1 30%;        
+    max-width: 32%;
+
   }
 
-  @media screen and (width >= 768px) {
-    flex: 1 1 30%;
+  @media screen and (width >= 768px) {      
+    max-width: 33%;
     min-height: 444px;
   }
 }
