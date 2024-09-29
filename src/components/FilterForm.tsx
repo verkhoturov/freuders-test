@@ -130,8 +130,6 @@ export const FilterForm = () => {
         }
     };
 
-    console.log('subjectOptions', subjectOptions);
-
     return (
         <form className={styles.form} onSubmit={onSubmit}>
             <Flex
