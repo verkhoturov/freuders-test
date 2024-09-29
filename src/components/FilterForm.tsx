@@ -12,6 +12,7 @@ import {
 } from '../store';
 
 import styles from './FilterForm.module.scss';
+import { getSubjectsList } from '../api/getSubjectsList';
 
 const sexOptions: SelectOption[] = [
     {
@@ -63,12 +64,6 @@ const ratingOptions = [
     },
 ];
 
-const topicOptions = [
-    {
-        label: 'Любая тема',
-    },
-];
-
 const SelectorWrapper = ({
     children,
     alignItems,
@@ -89,6 +84,11 @@ export const FilterForm = () => {
     const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
 
     const [loading, setLoading] = React.useState(false);
+    const [topicOptions, setTopicOptions] = React.useState<SelectOption[]>([
+        {
+            label: 'Любая тема',
+        },
+    ]);
 
     const dispatch = useAppDispatch();
     const filterFormState = useAppSelector((state: RootState) => state.filterForm);
@@ -108,6 +108,18 @@ export const FilterForm = () => {
         setLoading(true);
         await dispatch(fetchSpecialists(filterFormState));
         setLoading(false);
+    };
+
+    const getTopicOptions = async () => {
+        const res = await getSubjectsList();
+
+        if (res?.list) {
+            const topicOptions: SelectOption[] = res?.list.map((item) => ({
+                value: item.id,
+                label: item.name,
+            }));
+            setTopicOptions(topicOptions);
+        }
     };
 
     return (
@@ -147,6 +159,7 @@ export const FilterForm = () => {
                         value={filterFormState.topic}
                         onSelectionChange={handleChange}
                         options={topicOptions}
+                        onClick={getTopicOptions}
                     />
                 </SelectorWrapper>
 

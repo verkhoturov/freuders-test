@@ -13,9 +13,9 @@ export const getSubjectsList = async () => {
             throw new Error(error.Message);
         }
 
-        const data: FetchResponse = await response.json();
+        const { data }: FetchResponse = await response.json();
 
-        return data;
+        return { list: data };
     } catch (error) {
         console.error(error);
     }

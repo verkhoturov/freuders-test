@@ -17,6 +17,7 @@ interface SelectProps {
     label?: string;
     isLargeLabel?: boolean;
     onSelectionChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    onClick?: () => void;
 }
 
 export const Select = ({
