@@ -8,10 +8,13 @@
     "build": "tsc -b && vite build",
     "eslint": "eslint .",
     "preview": "vite preview",
-    "prettier": "prettier \"**/*.{ts,tsx,js}\" --write",
+    "prettier": "prettier \"**/*.{ts,tsx,js,md}\" --write",
+    "prettier:check": "prettier \"**/*.{ts,tsx,js,css,html,md,mdx}\" --check",
     "stylelint": "stylelint \"src/**/*.{scss,css}\" --fix",
+    "stylelint:check": "stylelint './apps/**/*.{ts,tsx,css}'",
     "eslint:format": "eslint  \"./src/**/*.{ts,tsx}\" --fix",
-    "format": "npm run prettier && npm run eslint:format && npm run stylelint"
+    "lint:format": "npm run prettier && npm run eslint:format && npm run stylelint",
+    "lint:check": "npm run prettier:check && npm run eslint && npm run stylelint:check"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
