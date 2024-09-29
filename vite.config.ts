@@ -7,7 +7,6 @@ export default defineConfig(({ mode }) => {
     const BACKEND_API_URL = env.VITE_BACKEND_API_URL;
     return {
         plugins: [react()],
-        base: "https://verkhoturov.github.io/freuders-test/",
         css: {
             preprocessorOptions: {
                 scss: {
