@@ -1,14 +1,14 @@
-import { createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {  FilterFormState } from "../types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { FilterFormState } from '../types';
 
 const initialState: FilterFormState = {
-    sex: "",
-    topic: "",
-    level: "",
-    rating: "",
-    ageFrom: "18",
-    ageTo: "99",
-}
+    sex: '',
+    topic: '',
+    level: '',
+    rating: '',
+    ageFrom: '18',
+    ageTo: '99',
+};
 
 export const filterFormSlice = createSlice({
     name: 'filterForm',
@@ -21,9 +21,9 @@ export const filterFormSlice = createSlice({
             state.rating = action.payload.rating;
             state.ageFrom = action.payload.ageFrom;
             state.ageTo = action.payload.ageTo;
-        }
+        },
     },
-})
+});
 
 export const { setFormState } = filterFormSlice.actions;
 

@@ -1,148 +1,183 @@
 import React from 'react';
 import { Flex, useMediaQuery } from '@chakra-ui/react';
-import { Select, SelectAgeRange, SelectOption } from "./Select";
+import { Select, SelectAgeRange, SelectOption } from './Select';
 import { Button } from './Button';
-import { Sex, Level } from "../types";
-import { RootState, useAppDispatch, setFormState, fetchSpecialists, useAppSelector } from '../store';
+import { Sex, Level } from '../types';
+import {
+    RootState,
+    useAppDispatch,
+    setFormState,
+    fetchSpecialists,
+    useAppSelector,
+} from '../store';
 
 import styles from './FilterForm.module.scss';
 
-const sexOptions: SelectOption[] = [{
-  label: 'Любого пола'
-}, {
-  value: Sex.Male,
-  label: 'М'
-}, {
-  value: Sex.Female,
-  label: 'Ж'
-}];
-
-const levelOptions = [{
-  label: "Все варианты",
-},
-{
-  value: Level.Basic,
-  label: "Базовый",
-},
-{
-  value: Level.Premium,
-  label: "Премиум",
-}];
-
-const ratingOptions = [{
-  label: "Не важен",
-},
-{
-  value: 0,
-  label: "Новые",
-},
-{
-  value: 100,
-  label: "От 100 до 80",
-},
-{
-  value: 79,
-  label: "От 79 до 60",
-},
-{
-  value: 59,
-  label: "От 59 до 40",
-},
+const sexOptions: SelectOption[] = [
+    {
+        label: 'Любого пола',
+    },
+    {
+        value: Sex.Male,
+        label: 'М',
+    },
+    {
+        value: Sex.Female,
+        label: 'Ж',
+    },
 ];
 
-const topicOptions = [{
-  label: "Любая тема"
-}];
+const levelOptions = [
+    {
+        label: 'Все варианты',
+    },
+    {
+        value: Level.Basic,
+        label: 'Базовый',
+    },
+    {
+        value: Level.Premium,
+        label: 'Премиум',
+    },
+];
 
-const SelectorWrapper = ({ children, alignItems }: { children: React.ReactNode; alignItems?: string }) => {
-  const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
+const ratingOptions = [
+    {
+        label: 'Не важен',
+    },
+    {
+        value: 0,
+        label: 'Новые',
+    },
+    {
+        value: 100,
+        label: 'От 100 до 80',
+    },
+    {
+        value: 79,
+        label: 'От 79 до 60',
+    },
+    {
+        value: 59,
+        label: 'От 59 до 40',
+    },
+];
 
-  return <Flex basis={isLargerThan768 ? 312 : "100%"} alignItems={alignItems}>
-    {children}
-  </Flex>
-}
+const topicOptions = [
+    {
+        label: 'Любая тема',
+    },
+];
 
+const SelectorWrapper = ({
+    children,
+    alignItems,
+}: {
+    children: React.ReactNode;
+    alignItems?: string;
+}) => {
+    const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
+
+    return (
+        <Flex basis={isLargerThan768 ? 312 : '100%'} alignItems={alignItems}>
+            {children}
+        </Flex>
+    );
+};
 
 export const FilterForm = () => {
-  const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
+    const [isLargerThan768] = useMediaQuery('(min-width: 768px)');
 
-  const dispatch = useAppDispatch();
-  const filterFormState = useAppSelector((state: RootState) => state.filterForm);
-  const { loading } = useAppSelector((state: RootState) => state.specialists);
+    const [loading, setLoading] = React.useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    dispatch(setFormState({
-      ...filterFormState,
-      [name]: value,
-    }));
-  };
+    const dispatch = useAppDispatch();
+    const filterFormState = useAppSelector((state: RootState) => state.filterForm);
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(fetchSpecialists(filterFormState));
-  }
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        dispatch(
+            setFormState({
+                ...filterFormState,
+                [name]: value,
+            }),
+        );
+    };
 
-  return (
-    <form className={styles.form} onSubmit={onSubmit}>
-      <Flex justifyContent="space-between" wrap="wrap" rowGap={isLargerThan768 ? 9 : 5} columnGap={2}>
-        <SelectorWrapper>
-          <Select label="Я ищу психолога"
-            id="sex"
-            name="sex"
-            value={filterFormState.sex}
-            onSelectionChange={handleChange}
-            options={sexOptions}
-            isLargeLabel
-          />
-        </SelectorWrapper>
+    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setLoading(true);
+        await dispatch(fetchSpecialists(filterFormState));
+        setLoading(false);
+    };
 
-        <SelectorWrapper>
-          <SelectAgeRange label="В возрасте"
-            ageFrom={filterFormState.ageFrom}
-            ageTo={filterFormState.ageTo}
-            onSelectionChange={handleChange}
-          />
-        </SelectorWrapper>
+    return (
+        <form className={styles.form} onSubmit={onSubmit}>
+            <Flex
+                justifyContent="space-between"
+                wrap="wrap"
+                rowGap={isLargerThan768 ? 9 : 5}
+                columnGap={2}
+            >
+                <SelectorWrapper>
+                    <Select
+                        label="Я ищу психолога"
+                        id="sex"
+                        name="sex"
+                        value={filterFormState.sex}
+                        onSelectionChange={handleChange}
+                        options={sexOptions}
+                        isLargeLabel
+                    />
+                </SelectorWrapper>
 
-        <SelectorWrapper >
-          <Select label="Тема"
-            id="topic"
-            name="topic"
-            value={filterFormState.topic}
-            onSelectionChange={handleChange}
-            options={topicOptions}
-          />
-        </SelectorWrapper>
+                <SelectorWrapper>
+                    <SelectAgeRange
+                        label="В возрасте"
+                        ageFrom={filterFormState.ageFrom}
+                        ageTo={filterFormState.ageTo}
+                        onSelectionChange={handleChange}
+                    />
+                </SelectorWrapper>
 
-        <SelectorWrapper >
-          <Select label="Квалификация"
-            id="level"
-            name="level"
-            value={filterFormState.level}
-            onSelectionChange={handleChange}
-            options={levelOptions}
-          />
-        </SelectorWrapper>
+                <SelectorWrapper>
+                    <Select
+                        label="Тема"
+                        id="topic"
+                        name="topic"
+                        value={filterFormState.topic}
+                        onSelectionChange={handleChange}
+                        options={topicOptions}
+                    />
+                </SelectorWrapper>
 
-        <SelectorWrapper  >
-          <Select label="Рейтинг"
-            id="rating"
-            name="rating"
-            value={filterFormState.rating}
-            onSelectionChange={handleChange}
-            options={ratingOptions}
-          />
-        </SelectorWrapper>
+                <SelectorWrapper>
+                    <Select
+                        label="Квалификация"
+                        id="level"
+                        name="level"
+                        value={filterFormState.level}
+                        onSelectionChange={handleChange}
+                        options={levelOptions}
+                    />
+                </SelectorWrapper>
 
+                <SelectorWrapper>
+                    <Select
+                        label="Рейтинг"
+                        id="rating"
+                        name="rating"
+                        value={filterFormState.rating}
+                        onSelectionChange={handleChange}
+                        options={ratingOptions}
+                    />
+                </SelectorWrapper>
 
-        <SelectorWrapper alignItems="flex-end" >
-          <Button colorScheme='pink' type='submit' isLoading={loading}>Показать анкеты</Button>
-        </SelectorWrapper>
-
-      </Flex>
-    </form>
-  )
-}
+                <SelectorWrapper alignItems="flex-end">
+                    <Button colorScheme="pink" type="submit" isLoading={loading}>
+                        Показать анкеты
+                    </Button>
+                </SelectorWrapper>
+            </Flex>
+        </form>
+    );
+};

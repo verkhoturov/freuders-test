@@ -1,27 +1,32 @@
-import type { RootState } from '../store';
-import { useSelector } from 'react-redux';
-import { EmptySearchIcon } from "./Icons";
+import { useAppSelector, RootState } from '../store';
+import { EmptySearchIcon } from './Icons';
+import { Card } from './Card';
 
 import styles from './CardList.module.scss';
 
 export const CardList = () => {
+    const { loading, list } = useAppSelector((state: RootState) => state.specialists);
 
-  const specialistsList = useSelector((state: RootState) => state.specialists.list);
+    if (loading && list.length === 0) return null;
 
-  console.log("specialistsList", specialistsList);
+    if (list.length === 0) {
+        return (
+            <div className={styles.emptyWrapper}>
+                <div className={styles.emptyInner}>
+                    <EmptySearchIcon />
+                    <p>
+                        К сожалению, нет анкет <br /> с такими параметрами{' '}
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
-  if (specialistsList.length === 0) {
-    return <div className={styles.emptyWrapper}>
-      <div className={styles.emptyInner}>
-        <EmptySearchIcon />
-        <p>К сожалению, нет анкет <br /> с такими параметрами </p>
-      </div>
-    </div>
-  }
-
-  return (
-    <div>
-      {specialistsList.map(({name, userId}) => <p key={userId}>{name}</p>)}
-    </div>
-  )
-}
+    return (
+        <div className={styles.list}>
+            {list.map((specialist) => (
+                <Card key={specialist.userId} {...specialist} />
+            ))}
+        </div>
+    );
+};

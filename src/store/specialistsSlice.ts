@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Specialist, FilterFormState } from "../types";
-import { getSpecialistsList } from "../api/getSpecialistsList";
-
+import { Specialist, FilterFormState } from '../types';
+import { getSpecialistsList } from '../api/getSpecialistsList';
 
 export const fetchSpecialists = createAsyncThunk(
     'specialists/fetchSpecialists',
@@ -10,10 +9,10 @@ export const fetchSpecialists = createAsyncThunk(
             const data = await getSpecialistsList(params);
             return data?.items;
         } catch (error: unknown) {
-            // @ts-ignore
+            // @ts-expect-error // неизвестная ошибка
             return rejectWithValue(error.message || 'Не удалось загрузить данные');
         }
-    }
+    },
 );
 
 export interface SpecialistsState {
@@ -25,8 +24,8 @@ export interface SpecialistsState {
 const initialState: SpecialistsState = {
     list: [],
     loading: false,
-    error: null
-}
+    error: null,
+};
 
 export const specialistsSlice = createSlice({
     name: 'specialists',
@@ -34,7 +33,7 @@ export const specialistsSlice = createSlice({
     reducers: {
         setSpecialistsList: (state, action: PayloadAction<Specialist[]>) => {
             state.list = action.payload;
-        }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -49,9 +48,9 @@ export const specialistsSlice = createSlice({
             .addCase(fetchSpecialists.fulfilled, (state, action) => {
                 state.loading = false;
                 state.list = action.payload || [];
-            })
+            });
     },
-})
+});
 
 export const { setSpecialistsList } = specialistsSlice.actions;
 

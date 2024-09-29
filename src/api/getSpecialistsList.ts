@@ -1,10 +1,10 @@
-import { Sex, Level, FilterFormState, Specialist } from "../types";
+import { Sex, Level, FilterFormState, Specialist } from '../types';
 
 export interface FetchResponse {
     data: {
         items: Specialist[];
         totalCount: number;
-    }
+    };
     Message?: string;
 }
 
@@ -71,15 +71,16 @@ function convertStateToFetchParams(state: FilterFormState): FetchParams {
 const fetchSpecialists = async (params: FetchParams) => {
     const defaultParams = {
         limit: 12,
-        offset: 0
+        offset: 0,
     };
 
     const combinedParams = { ...defaultParams, ...params };
 
     const searchParams = new URLSearchParams(
         Object.entries(combinedParams)
+            // eslint-disable-next-line
             .filter(([_, value]) => value !== undefined)
-            .map(([key, value]) => [key, value.toString()])
+            .map(([key, value]) => [key, value.toString()]),
     );
 
     try {
@@ -90,7 +91,9 @@ const fetchSpecialists = async (params: FetchParams) => {
             throw new Error(error.Message);
         }
 
-        const { data: { items, totalCount } }: FetchResponse = await response.json();
+        const {
+            data: { items, totalCount },
+        }: FetchResponse = await response.json();
 
         return { items, totalCount };
     } catch (error) {
@@ -101,4 +104,4 @@ const fetchSpecialists = async (params: FetchParams) => {
 export const getSpecialistsList = async (formState: FilterFormState) => {
     const params = convertStateToFetchParams(formState);
     return fetchSpecialists(params);
-}
+};

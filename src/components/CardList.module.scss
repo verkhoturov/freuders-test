@@ -1,9 +1,9 @@
 .emptyWrapper {
    display: flex;
-   align-items: center;
-   justify-content: center;
 
    flex: 1 1 auto;
+   align-items: center;
+   justify-content: center;
 }
 
 .emptyInner {
@@ -13,7 +13,21 @@
   justify-content: center;
 
   > p {
+   font-size: 14px;
    text-align: center;
-   font-size: 20px;
+
+   @media screen and (width >= 768px) {
+      font-size: 20px;
+    }
+  }
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 8px;
+
+  @media screen and (width >= 768px) {
+    gap: 40px 20px;
   }
 }

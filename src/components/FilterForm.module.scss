@@ -1,10 +1,10 @@
 .form {
-   border: 1px solid #CCCCCC;
    padding: 10px 8px;
+   border: 1px solid #CCCCCC;
    border-radius: 2px;
 
-   @media screen and (min-width: 768px) {
-        border: unset;
+   @media screen and (width >= 768px) {
         padding: 0;
+        border: unset;
    }
 }
