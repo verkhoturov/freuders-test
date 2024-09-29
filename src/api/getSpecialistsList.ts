@@ -21,7 +21,7 @@ export interface FetchParams {
 function convertStateToFetchParams(state: FilterFormState): FetchParams {
     const params: FetchParams = {};
 
-    if (state.sex) {
+    if (state.sex && !isNaN(Number(state.sex))) {
         params.sex = Number(state.sex) as Sex;
     }
 
